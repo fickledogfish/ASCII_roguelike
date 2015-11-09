@@ -1,0 +1,34 @@
+#pragma once
+
+#include <cstring>
+#include <boost/version.hpp>
+#include "@PROJECT_SOURCE_DIR@/src/Coordinates.hpp"
+
+namespace config {
+
+    // === Project Data ===
+    const int VERSION_MAJOR = @PROJECT_VERSION_MAJOR@;
+    const int VERSION_MINOR = @PROJECT_VERSION_MINOR@;
+    const std::string PROJECT_NAME = "@PROJECT_NAME@";
+    const bool DEBUG_MODE = strcmp("@DEBUG_MODE@", "ON") == 0 ? true : false;
+    const std::string RESOURCES_FOLDER = "./resources/";
+    const std::string LEVELS_FOLDER = RESOURCES_FOLDER + "levels/";
+
+    // === Boost Data ===
+    const int BOOST_MAJOR = BOOST_VERSION/100000;
+    const int BOOST_MINOR = (BOOST_VERSION/100) % 1000;
+    const int BOOST_SUB_MINOR = BOOST_VERSION % 100;
+
+    // === Map Data ===
+    const bool SANITY_CHECK_ALL = strcmp("@SANITY_CHECK_ALL@", "ON") == 0 ? true : false;
+
+    struct mapsize {
+        const int rows;
+        const int cols;
+    };
+    const mapsize MAP_SIZE = {.rows = 15, .cols = 80}; // rows and columns the map can have
+
+    // === Game Data ===
+    const int BAR_SIZE = 20; // number of characters a status bar must contain
+
+}

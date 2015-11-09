@@ -1,0 +1,148 @@
+@startuml
+
+title ASCII Roguelike
+left to right direction
+
+class Entity {
+    -Coordinates _start_position
+    -Coordinates _current_position
+    -std::string _name
+    -int _max_health
+    -int _current_health
+    -unsigned int _attack
+    -char _representation
+
+    --
+
+    #Entity(int start_x, int start_y, std::string name, char representation, int max_health = 100, unsigned int attack = 10)
+
+    ..
+
+    +bool isDead()
+    +void takeDamage(unsigned int amount_of_damage)
+    +void attack(Entity& e)
+    +void printStatus()
+
+    +void addToMap(Map& current_map);
+
+    ..Getters..
+
+    +std::string getName()
+    +Coordinates getPosition()
+    +int getCurrentHealth()
+    +char getRepresentation()
+    +int getAttack()
+
+    ..Movement..
+
+    +{abstract} bool move(Map& current_map)
+    #void moveToPoint(int row, int col)
+    #void relativeMove(int x, int y)
+    #void moveToDirection(Direction d)
+    +bool cannotMove(Map& current_map);
+    +Coordinates virtualMovement(Direction d);
+    +bool validateMove(Map& current_map, Coordinates future_pos)
+}
+
+Player <|-- Entity
+
+class Player {
+    +Player(int start_x, int start_y, std::string name, char representation, unsigned int max_health, unsigned int attack)
+
+    ..
+
+    +bool move(Map& current_map)
+    +void fight(Enemy& e)
+}
+
+Enemy <|-- Entity
+
+class Enemy {
+    +Enemy(int start_x, int start_y, std::string name, char representation, unsigned int max_health, unsigned int attack)
+
+    ..
+
+    +bool move(Map &current_map)
+}
+
+class Map {
+    -std::string _mapstr
+    -std::vector<std::vector<char>> _map
+    -const std::map<char,char> _mapchars
+    -bool _sanity_only
+    -std::map<std::string, char> _overlap
+
+    --
+
+    +Map(std::string filepath, std::map<char,char> mapchars, bool sanity_only = false)
+
+    ..
+
+    +char translateChar(int row, int col)
+    -void _buildMap()
+
+    ..
+
+    +void overlap(int row, int col, char new_val)
+    +void overlap(Coordinates point, char new_val)
+    +void clearOverlap()
+    -bool _overlapPoint(int row, int col)
+    -char _getOverlappedPoint(int row, int col)
+    -bool _loadMapStr(std::string filepath)
+
+    ..Getters..
+
+    +char getBlock(int row, int col)
+    +char getBlock(const Coordinates c)
+
+    ..Printers..
+    +void printMap()
+
+    ..Checkers..
+    -bool _checkLinesAndCols()
+    -bool _sanityCheck()
+    -bool _checkMapChars()
+    -void _isSanityObject()
+}
+
+class GameMaster {
+    -std::map<char,char> _mapchars
+    -std::vector<std::string> _valid_maps
+
+    +GameMaster(std::map<char,char> mapchars)
+
+    +bool checkSanityAll()
+    +void playGame(bool sanity_check = true)
+
+    -void _cleanEnemies()
+    -void _movePlayer(Player& p, Map& current_map)
+    -void _moveEnemies(Map& current_map)
+    -void _checkForFights(Player& p)
+};
+
+}
+
+class Coordinates {
+    +int row
+    +int col
+
+    +Coordinates(int x, int y)
+    +Coordinates(const Coordinates& c)
+    +bool operator==(Coordinates& other)
+}
+
+enum Direction {
+    UP
+    DOWN
+    LEFT
+    RIGHT
+}
+
+class TranslationList {
+    +char WALL
+    +char GROUND
+    +char GRASS
+    +char TREE
+}
+
+@enduml
